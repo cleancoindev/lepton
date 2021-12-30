@@ -20,6 +20,10 @@
   "bugs": {
     "url": "https://github.com/Railgun-Community/lepton/issues"
   },
+  "cmake-js": {
+    "runtime": "node",
+    "runtimeVersion": "16.6.2"
+  },
   "devDependencies": {
     "@types/bn.js": "^5.1.0",
     "@types/chai": "^4.2.21",
@@ -54,6 +58,7 @@
     "ethers": "^5.4.4",
     "levelup": "^5.0.1",
     "msgpack-lite": "^0.1.26",
+    "native-prover": "git+ssh://git@github.com/Railgun-Community/native-prover#dao/cmake",
     "snarkjs": "^0.4.10"
   }
 }
