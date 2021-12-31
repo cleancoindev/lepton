@@ -1,12 +1,17 @@
 import BN from 'bn.js';
 // @ts-ignore-next-line
 import { groth16 } from 'snarkjs';
+
 import {
   bytes,
   hash,
   babyjubjub,
   constants,
 } from '../utils';
+
+const fs = require('fs');
+
+const np = require('native-prover');
 
 export type Artifacts = {
   zkey: ArrayLike<number>;
@@ -110,8 +115,15 @@ class Prover {
     // Get public inputs
     const publicInputs = Prover.privateToPublicInputs(inputs);
 
+    // Use native prover
+
+    const npInputs = JSON.stringify(formattedInputs);
+    const buf = np.native_prove(npInputs);
+    fs.writeFileSync('wtns', buf);
+
     // Generate proof
-    const { proof } = await groth16.fullProve(formattedInputs, artifacts.wasm, artifacts.zkey);
+    const { proof } = await groth16.prove(artifacts.zkey, 'output.wtns');
+    // const { proof } = await groth16.fullProve(formattedInputs, artifacts.wasm, artifacts.zkey);
 
     // Format proof
     const proofFormatted = {
