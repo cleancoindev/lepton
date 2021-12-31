@@ -33,7 +33,7 @@ export type Nullifier = {
   txid: bytes.BytesData;
 };
 
-// eslint-disable-next-line no-unused-vars
+// eslint-disable-next-line no-unused-vars, @typescript-eslint/no-unused-vars
 export type RootValidator = (tree: number, root: bytes.BytesData) => Promise<boolean>;
 
 // Declare depth
@@ -443,7 +443,6 @@ class MerkleTree {
         treeLengthPromises[index] = this.getTreeLength(index);
       });
 
-      // eslint-disable-next-line no-await-in-loop
       const treeLengths = await Promise.all(treeLengthPromises);
 
       const updatePromises: (Promise<void> | null)[] = [];
@@ -468,7 +467,6 @@ class MerkleTree {
       });
 
       // Wait for updates to complete
-      // eslint-disable-next-line no-await-in-loop
       await Promise.all(updatePromises);
 
       // If no work was done exit
