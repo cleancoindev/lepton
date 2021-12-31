@@ -122,7 +122,7 @@ class Prover {
     fs.writeFileSync('wtns', buf);
 
     // Generate proof
-    const { proof } = await groth16.prove(artifacts.zkey, 'output.wtns');
+    const { proof } = await groth16.prove(artifacts.zkey, 'wtns');
     // const { proof } = await groth16.fullProve(formattedInputs, artifacts.wasm, artifacts.zkey);
 
     // Format proof
