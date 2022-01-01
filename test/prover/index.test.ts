@@ -222,7 +222,7 @@ describe('Prover/Index', () => {
     });
   });
 
-  it.only('Should calculate proofs', async () => {
+  it('Should calculate proofs', async () => {
     expect((await prover.prove('erc20small', erc20TestVector)).inputs).to.deep.equal({
       type: 'erc20',
       adaptID: '03b075046b71ff5f8e0792de4b82ddc979fcb3b8c03abe12972e65c57759fb46',

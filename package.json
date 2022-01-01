@@ -58,7 +58,7 @@
     "ethers": "^5.4.4",
     "levelup": "^5.0.1",
     "msgpack-lite": "^0.1.26",
-    "native-prover": "git+ssh://git@github.com/Railgun-Community/native-prover#dao/cmake",
+    "native-prover": "github:Railgun-Community/native-prover#dao/cmake",
     "snarkjs": "^0.4.10"
   }
 }

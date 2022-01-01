@@ -9,8 +9,6 @@ import {
   constants,
 } from '../utils';
 
-const fs = require('fs');
-
 const np = require('native-prover');
 
 export type Artifacts = {
@@ -109,20 +107,17 @@ class Prover {
     // Fetch artifacts
     const artifacts = await this.artifactsGetter(circuit);
 
-    // Get formatted inputs
-    const formattedInputs = Prover.formatPrivateInputs(inputs);
+    // Get formatted inputs in decimal format for native calculator
+    const formattedInputs = Prover.formatPrivateInputs(inputs, true);
 
     // Get public inputs
     const publicInputs = Prover.privateToPublicInputs(inputs);
 
-    // Use native prover
-
+    // Use native witness calculator
     const npInputs = JSON.stringify(formattedInputs);
-    const buf = np.native_prove(npInputs);
-    fs.writeFileSync('wtns', buf);
-
+    np.native_prove(npInputs, 'out.wtns');
     // Generate proof
-    const { proof } = await groth16.prove(artifacts.zkey, 'wtns');
+    const { proof } = await groth16.prove(artifacts.zkey, 'out.wtns');
     // const { proof } = await groth16.fullProve(formattedInputs, artifacts.wasm, artifacts.zkey);
 
     // Format proof
@@ -188,37 +183,40 @@ class Prover {
     // }
   }
 
-  static formatPrivateInputs(inputs: PrivateInputs): FormattedCircuitInputs {
+  static formatPrivateInputs(inputs: PrivateInputs, decimal = false): FormattedCircuitInputs {
     const publicInputs = Prover.privateToPublicInputs(inputs);
     const hashOfInputs = Prover.hashInputs(publicInputs);
 
     // if (inputs.type === 'erc20') {
     // Inputs type is ERC20
+    const decimalify = (x:bytes.BytesData) => new BN(bytes.hexlify(x), 16).toString(10);
+    const hexlify = (x:bytes.BytesData) => bytes.hexlify(x, true);
+    const convert = decimal ? decimalify : hexlify;
     return {
-      hashOfInputs: bytes.hexlify(hashOfInputs, true),
-      adaptID: bytes.hexlify(inputs.adaptID, true),
-      tokenField: bytes.hexlify(inputs.tokenField, true),
-      depositAmount: bytes.hexlify(inputs.depositAmount, true),
-      withdrawAmount: bytes.hexlify(inputs.withdrawAmount, true),
-      outputTokenField: bytes.hexlify(inputs.outputTokenField, true),
-      outputEthAddress: bytes.hexlify(inputs.outputEthAddress, true),
-      randomIn: inputs.randomIn.map((el) => bytes.hexlify(el, true)),
-      valuesIn: inputs.valuesIn.map((el) => bytes.hexlify(el, true)),
-      spendingKeys: inputs.spendingKeys.map((el) => bytes.hexlify(el, true)),
-      treeNumber: bytes.hexlify(inputs.treeNumber, true),
-      merkleRoot: bytes.hexlify(inputs.merkleRoot, true),
-      nullifiers: inputs.nullifiers.map((el) => bytes.hexlify(el, true)),
-      pathElements: inputs.pathElements.map((el) => el.map((el2) => bytes.hexlify(el2, true))),
-      pathIndices: inputs.pathIndices.map((el) => bytes.hexlify(el, true)),
+      hashOfInputs: convert(hashOfInputs),
+      adaptID: convert(inputs.adaptID),
+      tokenField: convert(inputs.tokenField),
+      depositAmount: convert(inputs.depositAmount),
+      withdrawAmount: convert(inputs.withdrawAmount),
+      outputTokenField: convert(inputs.outputTokenField),
+      outputEthAddress: convert(inputs.outputEthAddress),
+      randomIn: inputs.randomIn.map((el) => convert(el)),
+      valuesIn: inputs.valuesIn.map((el) => convert(el)),
+      spendingKeys: inputs.spendingKeys.map((el) => convert(el)),
+      treeNumber: convert(inputs.treeNumber),
+      merkleRoot: convert(inputs.merkleRoot),
+      nullifiers: inputs.nullifiers.map((el) => convert(el)),
+      pathElements: inputs.pathElements.map((el) => el.map((el2) => convert(el2))),
+      pathIndices: inputs.pathIndices.map((el) => convert(el)),
       recipientPK: inputs.recipientPK.map(
         (el) => babyjubjub.unpackPoint(el).map(
-          (el2) => bytes.hexlify(el2, true),
+          (el2) => convert(el2),
         ),
       ),
-      randomOut: inputs.randomOut.map((el) => bytes.hexlify(el, true)),
-      valuesOut: inputs.valuesOut.map((el) => bytes.hexlify(el, true)),
-      commitmentsOut: inputs.commitmentsOut.map((el) => bytes.hexlify(el, true)),
-      ciphertextHash: bytes.hexlify(inputs.ciphertextHash, true),
+      randomOut: inputs.randomOut.map((el) => convert(el)),
+      valuesOut: inputs.valuesOut.map((el) => convert(el)),
+      commitmentsOut: inputs.commitmentsOut.map((el) => convert(el)),
+      ciphertextHash: convert(inputs.ciphertextHash),
     };
     // }
   }
