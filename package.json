@@ -29,7 +29,7 @@
     "chai-as-promised": "^7.1.1",
     "circomlibjs": "^0.0.8",
     "encoding-down": "^7.0.0",
-    "ethers": "^5.4.4",
+    "ethers": "^5.6.4",
     "levelup": "^5.0.1",
     "msgpack-lite": "^0.1.26",
     "snarkjs": "^0.4.10"
