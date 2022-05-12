@@ -32,7 +32,7 @@
     "ethers": "^5.4.4",
     "levelup": "^5.0.1",
     "msgpack-lite": "^0.1.26",
-    "snarkjs": "^0.4.10"
+    "snarkjs": "^0.4.16"
   },
   "devDependencies": {
     "@types/bn.js": "^5.1.0",
